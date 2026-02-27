@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-text: var(--color-text);
+  --color-info: var(--color-info);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+}
+
+* {
+  -ms-overflow-style: none;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  outline: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@layer utilities {
+  @keyframes shine {
+    from {
+      background-position: 0 0;
+    }
+
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-shine {
+    animation: shine 2s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}

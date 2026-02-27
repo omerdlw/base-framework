@@ -1,0 +1,55 @@
+'use client'
+
+import { forwardRef } from 'react'
+
+import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+
+import { cn, resolveSlotClasses } from '../utils'
+
+const Tooltip = forwardRef(
+  (
+    {
+      text,
+      position = 'top',
+      delayMs = 200,
+      className,
+      classNames = {},
+      children,
+      open,
+      defaultOpen,
+      onOpenChange,
+      ...props
+    },
+    ref
+  ) => {
+    const classes = resolveSlotClasses(className, classNames)
+
+    return (
+      <TooltipPrimitive.Provider delayDuration={delayMs}>
+        <TooltipPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+          <TooltipPrimitive.Trigger asChild className={cn(classes.trigger)}>
+            {children}
+          </TooltipPrimitive.Trigger>
+
+          <TooltipPrimitive.Portal>
+            <TooltipPrimitive.Content
+              ref={ref}
+              side={position}
+              align='center'
+              className={cn(classes.content, classes.root)}
+              sideOffset={5}
+              {...props}
+            >
+              {text}
+              {classes.arrow && <TooltipPrimitive.Arrow className={cn(classes.arrow)} />}
+            </TooltipPrimitive.Content>
+          </TooltipPrimitive.Portal>
+        </TooltipPrimitive.Root>
+      </TooltipPrimitive.Provider>
+    )
+  }
+)
+
+Tooltip.displayName = 'Tooltip'
+
+export default Tooltip

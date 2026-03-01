@@ -6,7 +6,6 @@ import { EVENT_TYPES, globalEvents } from '@/lib/events'
 
 import { getErrorReporter } from './reporter'
 
-
 export class ErrorBoundaryCore extends React.Component {
   constructor(props) {
     super(props)

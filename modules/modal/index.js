@@ -15,7 +15,8 @@ import { useModal } from '@/modules/modal/context'
 import { useModalRegistry } from '../registry/context'
 import { BACKDROP_VARIANTS, POSITION_CLASSES, getModalVariants } from './utils'
 
-const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
 const Modal = () => {
   const {

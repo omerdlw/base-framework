@@ -21,8 +21,6 @@ export const TOAST_TYPES = {
   INFO: 'INFO',
 }
 
-
-
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState({})
   const timersRef = useRef(new Map())
@@ -46,7 +44,7 @@ export const NotificationProvider = ({ children }) => {
         if (Object.keys(filtered).length === 0) {
           REMOVE_STORAGE_ITEM('critical_notifications')
         }
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     }
   }, [])
 
@@ -165,4 +163,3 @@ export const useNotificationState = () => {
   if (!context) throw new Error('useNotificationState must be used within a NotificationProvider')
   return context
 }
-

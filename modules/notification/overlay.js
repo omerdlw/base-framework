@@ -37,51 +37,48 @@ export function NotificationOverlay({ notification, onDismiss, type }) {
       initial={{ opacity: 0, x: 50, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={{ left: 0, right: 0.5 }}
       drag={config.dismissible ? 'x' : false}
+      dragElastic={{ left: 0, right: 0.5 }}
       layout
     >
-      <div className='p-2.5'>
-        <div className='flex items-start gap-4'>
+      <div className='flex flex-col space-y-2 p-2.5'>
+        <div className='flex items-center gap-4'>
           <div
             className={CN(
-              'center size-10 shrink-0 rounded-[20px] bg-current/10',
+              'center size-12 shrink-0 rounded-[20px] bg-current/10',
               config.colorClass
             )}
           >
             <Icon icon={config.icon} size={20} />
           </div>
-          <div className='min-w-0 flex-1 pt-0.5'>
+          <div className='min-w-0 flex-1 -space-y-0.5'>
             <h3 className={CN('text-sm font-semibold text-current')}>
               {notification.title ||
                 (notification.description ? notification.message : config.title)}
             </h3>
-            <p className={CN('mt-1 text-sm opacity-70')}>
+            <p className={CN('text-sm opacity-70')}>
               {notification.description || notification.message || config.description}
             </p>
-            {notification.actions && (
-              <div className='mt-3 flex items-center gap-2'>
-                {notification.actions.map((action, index) => (
-                  <button
-                    onPointerDown={(e) => e.stopPropagation()}
-                    className={CN(
-                      'bg-white/10 hover:bg-white/20',
-                      'cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors'
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      action.onClick?.()
-                      if (action.dismiss) onDismiss()
-                    }}
-                    key={index}
-                  >
-                    {action.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
+        {notification.actions && (
+          <div className='flex flex-auto items-center gap-2'>
+            {notification.actions.map((action, index) => (
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                className='w-full flex-auto cursor-pointer rounded-[20px] bg-white/10 p-2 text-sm font-semibold transition-colors hover:bg-white/20'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  action.onClick?.()
+                  if (action.dismiss) onDismiss()
+                }}
+                key={index}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   )

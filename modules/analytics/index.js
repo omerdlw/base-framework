@@ -1,8 +1,4 @@
-export {
-  AnalyticsProvider,
-  useAnalytics,
-  useTrack,
-} from './context'
+export { AnalyticsProvider, useAnalytics, useTrack } from './context'
 
 export {
   usePageTracking,
@@ -26,4 +22,3 @@ export { AnalyticsStateDebugger } from './debuggers/analytics-state-debugger'
 export { CompactEventStream } from './debuggers/compact-event-stream'
 export { CompactPerformanceMetrics } from './debuggers/compact-performance-metrics'
 export { CompactStateDebugger } from './debuggers/compact-state-debugger'
-

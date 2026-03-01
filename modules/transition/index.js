@@ -9,11 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useTransitionActions } from './context'
 import { getPreset } from './presets'
 
-export {
-  TransitionProvider,
-  useTransitionState,
-  useTransitionActions,
-} from './context'
+export { TransitionProvider, useTransitionState, useTransitionActions } from './context'
 export { TRANSITION_PRESETS, getPreset, getBackgroundAnimation, DEFAULT_PRESET } from './presets'
 
 export function TransitionWrapper({ children }) {

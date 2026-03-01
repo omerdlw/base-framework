@@ -47,7 +47,7 @@ export const ModalProvider = ({ children }) => {
     if (onCloseRef.current) {
       try {
         onCloseRef.current(result)
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
       onCloseRef.current = null
     }
 
@@ -59,15 +59,9 @@ export const ModalProvider = ({ children }) => {
     setModalState((prevState) => ({ ...prevState, isOpen: false }))
   }, [])
 
-  const actionsValue = useMemo(
-    () => ({ openModal, closeModal }),
-    [openModal, closeModal]
-  )
+  const actionsValue = useMemo(() => ({ openModal, closeModal }), [openModal, closeModal])
 
-  const stateValue = useMemo(
-    () => modalState,
-    [modalState]
-  )
+  const stateValue = useMemo(() => modalState, [modalState])
 
   return (
     <ModalActionsContext.Provider value={actionsValue}>

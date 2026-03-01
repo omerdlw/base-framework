@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 
 import { useScrollToTop } from '@/lib/hooks'
+import { useBackgroundActions, useBackgroundState } from '@/modules/background/context'
 import Icon from '@/ui/icon'
 
 import { useModal } from '../modal/context'
@@ -10,6 +11,8 @@ import { useModal } from '../modal/context'
 function useDefaultNavActions() {
   const { visible: showScrollTop, scrollToTop } = useScrollToTop(100)
   const { openModal } = useModal()
+  const { isVideo, videoElement } = useBackgroundState()
+  const { toggleMute } = useBackgroundActions()
 
   return useMemo(
     () => [
@@ -17,17 +20,27 @@ function useDefaultNavActions() {
         key: 'scroll-top',
         icon: 'solar:arrow-up-bold',
         visible: showScrollTop,
-        order: 10,
+        order: 20,
         onClick: (e) => {
           e.stopPropagation()
           scrollToTop()
         },
       },
       {
+        key: 'toggle-mute',
+        icon: !videoElement?.muted ? 'solar:muted-bold' : 'solar:volume-loud-bold',
+        visible: !!isVideo,
+        order: 10,
+        onClick: (e) => {
+          e.stopPropagation()
+          toggleMute()
+        },
+      },
+      {
         key: 'settings',
         icon: 'solar:settings-bold',
         visible: true,
-        order: 100,
+        order: -100,
         onClick: (e) => {
           e.stopPropagation()
           openModal('SETTINGS_MODAL', 'center', {
@@ -40,7 +53,7 @@ function useDefaultNavActions() {
         },
       },
     ],
-    [showScrollTop, scrollToTop, openModal]
+    [showScrollTop, scrollToTop, openModal, isVideo, videoElement?.muted, toggleMute]
   )
 }
 

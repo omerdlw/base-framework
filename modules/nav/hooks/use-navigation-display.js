@@ -1,10 +1,13 @@
 'use client'
 
 import { useMemo } from 'react'
+import React from 'react'
 
 import { usePathname } from 'next/navigation'
 
-import { useCountdownActions, useCountdownState } from '@/modules/countdown'
+import MediaAction from '@/components/nav-actions/media-action'
+import { useBackgroundActions, useBackgroundState } from '@/modules/background/context'
+import { useCountdownState } from '@/modules/countdown'
 
 import { useNavigationContext } from '../context'
 import { useNavigationError } from './use-navigation-error'
@@ -15,8 +18,10 @@ export const useNavigationDisplay = () => {
   const { rawItems } = useNavigationItems()
   const { expanded, expandedParents, searchQuery } = useNavigationContext()
   const errorState = useNavigationError()
-  const { isEnabled: isCountdownEnabled, timeLeft, config: countdownConfig, isPlaying } = useCountdownState()
-  const { toggleVideo } = useCountdownActions()
+  const { isEnabled: isCountdownEnabled, timeLeft, config: countdownConfig } = useCountdownState()
+
+  const { isVideo, isPlaying: isBackgroundPlaying } = useBackgroundState()
+  const { toggleVideo: toggleBackgroundVideo } = useBackgroundActions()
 
   const isNotFoundPage = useMemo(() => {
     return rawItems.some((item) => item.path === 'not-found')
@@ -29,21 +34,21 @@ export const useNavigationDisplay = () => {
       type: 'COUNTDOWN',
       name: 'countdown',
       path: '/countdown',
-      title: `${pad(timeLeft.days)} days ${pad(timeLeft.hours)} hours ${pad(timeLeft.minutes)} minutes`,
+      title: `${timeLeft.days ? pad(timeLeft.days) + ' days ' : ''}${pad(timeLeft.hours)} hours ${pad(timeLeft.minutes)} minutes`,
       description: countdownConfig?.announcement || 'Scheduled Maintenance',
-      icon: isPlaying ? 'mdi:pause' : 'mdi:play',
+      icon: isBackgroundPlaying ? 'mdi:pause' : 'mdi:play',
       style: {
         title: {
-          className: 'font-mono'
-        }
+          className: 'font-mono',
+        },
       },
       hideSettings: true,
       hideScroll: true,
       action: null,
-      onClick: toggleVideo,
+      onClick: toggleBackgroundVideo,
       children: null,
     }
-  }, [isCountdownEnabled, timeLeft, countdownConfig, isPlaying, toggleVideo])
+  }, [isCountdownEnabled, timeLeft, countdownConfig, isBackgroundPlaying, toggleBackgroundVideo])
 
   const activeIndex = useMemo(() => {
     let idx = rawItems.findIndex((item) => item.isDataSource && item.isSelected)
@@ -145,8 +150,58 @@ export const useNavigationDisplay = () => {
       }
     }
 
+    // Override icon and action for video backgrounds
+    if (foundItem && !foundItem.isParent && isVideo) {
+      const showMediaAction = foundItem.mediaAction !== false
+      let mergedAction = showMediaAction ? <MediaAction /> : null
+
+      if (foundItem.action) {
+        if (React.isValidElement(foundItem.action)) {
+          mergedAction = (
+            <div className='flex flex-col gap-2'>
+              {foundItem.action}
+              {showMediaAction && <MediaAction />}
+            </div>
+          )
+        } else if (typeof foundItem.action === 'function') {
+          const Component = foundItem.action
+          mergedAction = (
+            <div className='flex flex-col gap-2'>
+              <Component />
+              {showMediaAction && <MediaAction />}
+            </div>
+          )
+        }
+      }
+
+      return {
+        ...foundItem,
+        action: mergedAction,
+        onClick: (e) => {
+          if (e && typeof e.preventDefault === 'function') {
+            e.preventDefault()
+          }
+          if (e && typeof e.stopPropagation === 'function') {
+            e.stopPropagation()
+          }
+
+          toggleBackgroundVideo()
+        },
+      }
+    }
+
     return foundItem
-  }, [pathname, navigationItems, rawItems, isNotFoundPage, errorState, countdownItem])
+  }, [
+    pathname,
+    navigationItems,
+    rawItems,
+    isNotFoundPage,
+    errorState,
+    countdownItem,
+    isVideo,
+    isBackgroundPlaying,
+    toggleBackgroundVideo,
+  ])
 
   return {
     navigationItems,

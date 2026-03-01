@@ -110,13 +110,13 @@ class ErrorReporter {
       try {
         report = this.beforeSend(report)
         if (!report) return
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     }
 
     this.handlers.forEach((handler) => {
       try {
         handler.handle(report)
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
 
     return report

@@ -15,20 +15,23 @@ const DEFAULT_BACKGROUND = {
   overlay: false,
   image: null,
   video: null,
-  blur: 0,
   animation: {
     transition: { duration: DURATION.SLOW, ease: 'easeInOut' },
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 },
   },
+  videoStyle: {},
+  noiseStyle: {},
   videoOptions: {
     playbackRate: 1,
     autoplay: true,
     muted: true,
     loop: true,
+    corp: 0,
   },
   isPlaying: false,
+  videoElement: null,
 }
 
 export function BackgroundProvider({ children }) {
@@ -45,6 +48,14 @@ export function BackgroundProvider({ children }) {
         ...prev.animation,
         ...(newBackground.animation || {}),
       },
+      videoStyle: {
+        ...prev.videoStyle,
+        ...(newBackground.videoStyle || {}),
+      },
+      noiseStyle: {
+        ...prev.noiseStyle,
+        ...(newBackground.noiseStyle || {}),
+      },
       videoOptions: {
         ...prev.videoOptions,
         ...(newBackground.videoOptions || {}),
@@ -56,8 +67,24 @@ export function BackgroundProvider({ children }) {
     setBackgroundState((prev) => ({ ...prev, isPlaying }))
   }, [])
 
+  const setVideoElement = useCallback((videoElement) => {
+    setBackgroundState((prev) => ({ ...prev, videoElement }))
+  }, [])
+
   const toggleVideo = useCallback(() => {
     setBackgroundState((prev) => ({ ...prev, isPlaying: !prev.isPlaying }))
+  }, [])
+
+  const toggleMute = useCallback(() => {
+    setBackgroundState((prev) => ({
+      ...prev,
+      videoOptions: {
+        ...prev.videoOptions,
+        muted: !prev.videoOptions?.muted,
+      },
+      // When unmuting, we should also ensure it's playing
+      isPlaying: prev.videoOptions?.muted ? true : prev.isPlaying,
+    }))
   }, [])
 
   const resetBackground = useCallback(() => {
@@ -71,6 +98,14 @@ export function BackgroundProvider({ children }) {
       animation: {
         ...DEFAULT_BACKGROUND.animation,
         ...(registryConfig.animation || {}),
+      },
+      videoStyle: {
+        ...DEFAULT_BACKGROUND.videoStyle,
+        ...(registryConfig.videoStyle || {}),
+      },
+      noiseStyle: {
+        ...DEFAULT_BACKGROUND.noiseStyle,
+        ...(registryConfig.noiseStyle || {}),
       },
       videoOptions: {
         ...DEFAULT_BACKGROUND.videoOptions,
@@ -91,6 +126,8 @@ export function BackgroundProvider({ children }) {
     () => ({
       hasBackground: !!(background.image || background.video),
       overlayOpacity: background.overlayOpacity,
+      videoStyle: background.videoStyle,
+      noiseStyle: background.noiseStyle,
       videoOptions: background.videoOptions,
       animation: background.animation,
       position: background.position,
@@ -98,8 +135,8 @@ export function BackgroundProvider({ children }) {
       overlay: background.overlay,
       image: background.image,
       video: background.video,
-      blur: background.blur,
       isPlaying: background.isPlaying,
+      videoElement: background.videoElement,
     }),
     [background]
   )
@@ -109,9 +146,11 @@ export function BackgroundProvider({ children }) {
       resetBackground,
       setBackground,
       setVideoPlaying,
+      setVideoElement,
       toggleVideo,
+      toggleMute,
     }),
-    [setBackground, resetBackground, setVideoPlaying, toggleVideo]
+    [setBackground, resetBackground, setVideoPlaying, setVideoElement, toggleVideo, toggleMute]
   )
 
   return (
@@ -134,4 +173,3 @@ export function useBackgroundActions() {
   if (!context) throw new Error('useBackgroundActions must be within BackgroundProvider')
   return context
 }
-

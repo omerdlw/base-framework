@@ -69,7 +69,7 @@ export function useQuery(endpoint, options = {}) {
   const cachedData = useSyncExternalStore(
     useCallback(
       (notify) => {
-        if (!cacheKey) return () => { }
+        if (!cacheKey) return () => {}
         return apiCache.subscribe(cacheKey, notify)
       },
       [cacheKey]
@@ -110,10 +110,10 @@ export function useQuery(endpoint, options = {}) {
         const data = force
           ? await apiClient.get(url, { signal: controller.signal })
           : await apiCache.fetchOrGet(
-            cacheKey,
-            () => apiClient.get(url, { signal: controller.signal }),
-            cacheTime
-          )
+              cacheKey,
+              () => apiClient.get(url, { signal: controller.signal }),
+              cacheTime
+            )
 
         if (force && cacheKey) {
           apiCache.set(cacheKey, data, cacheTime)
@@ -242,16 +242,16 @@ export function useMutation(options = {}) {
           toastRef.current.success(opts.successMessage || successMessage || 'Saved!')
         }
 
-        ; (opts.onSuccess || onSuccess)?.(result)
+        ;(opts.onSuccess || onSuccess)?.(result)
         return result
       } catch (err) {
         const apiError = err instanceof ApiError ? err : new ApiError(err.message, 0)
         setError(apiError)
 
         if (previousData !== null) {
-          ; (opts.onError || onError)?.(apiError, previousData)
+          ;(opts.onError || onError)?.(apiError, previousData)
         } else {
-          ; (opts.onError || onError)?.(apiError)
+          ;(opts.onError || onError)?.(apiError)
         }
 
         if ((opts.showErrorToast ?? showErrorToast) && !apiError.isNotFound()) {
@@ -261,7 +261,7 @@ export function useMutation(options = {}) {
         throw apiError
       } finally {
         setLoading(false)
-          ; (opts.onSettled || onSettled)?.()
+        ;(opts.onSettled || onSettled)?.()
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

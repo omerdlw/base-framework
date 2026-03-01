@@ -1,9 +1,17 @@
+import TestAction from '@/components/nav-actions/test-action'
+
 export const NAV_CONFIG = {
   items: {
     home: {
       path: '/',
       name: 'Placeholder',
       description: 'Initial Page',
+      icon: 'https://images3.alphacoders.com/118/thumb-1920-1184746.png',
+    },
+    test: {
+      path: '/test',
+      name: 'Test',
+      description: 'Test Page',
       icon: 'solar:home-2-bold',
     },
   },

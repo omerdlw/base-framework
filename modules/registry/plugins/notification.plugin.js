@@ -18,6 +18,6 @@ export const notificationPlugin = createPlugin({
       }
     }
 
-    return () => { }
+    return () => {}
   },
 })

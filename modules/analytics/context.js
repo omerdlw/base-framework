@@ -29,7 +29,7 @@ class AnalyticsManager {
 
       this.isInitialized = true
       this.processQueue()
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 
   async loadProvider(name, config) {
@@ -59,7 +59,7 @@ class AnalyticsManager {
     this.providers.forEach((provider) => {
       try {
         provider.track(eventName, parameters)
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
   }
 
@@ -74,7 +74,7 @@ class AnalyticsManager {
         if (provider.identify) {
           provider.identify(userId, traits)
         }
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
   }
 
@@ -89,7 +89,7 @@ class AnalyticsManager {
         if (provider.page) {
           provider.page(path, properties)
         }
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
   }
 
@@ -99,7 +99,7 @@ class AnalyticsManager {
         if (provider.reset) {
           provider.reset()
         }
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
   }
 
@@ -109,7 +109,7 @@ class AnalyticsManager {
         if (provider.setConsent) {
           provider.setConsent(consentSettings)
         }
-      } catch { } // eslint-disable-line no-empty
+      } catch {} // eslint-disable-line no-empty
     })
   }
 

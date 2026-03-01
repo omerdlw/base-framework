@@ -7,7 +7,6 @@ import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { EASING, Z_INDEX } from '@/lib/constants'
 import { useClickOutside } from '@/lib/hooks'
 import { useControlsState } from '@/modules/controls/context'
-import { useCountdownState } from '@/modules/countdown'
 import { useModal } from '@/modules/modal/context'
 import { useNavigation } from '@/modules/nav/hooks'
 
@@ -40,7 +39,6 @@ export default function Nav() {
   const navRef = useRef(null)
 
   const showControlsButton = hasControls
-  const { isEnabled: isCountdownEnabled } = useCountdownState()
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -91,7 +89,6 @@ export default function Nav() {
 
   useClickOutside(navRef, () => setExpanded(false))
 
-
   return (
     <MotionConfig transition={ANIMATION.transition}>
       <motion.div
@@ -99,11 +96,11 @@ export default function Nav() {
         transition={{ ease: EASING.SMOOTH, duration: 0.25 }}
         style={{
           zIndex: Z_INDEX.NAV_BACKDROP,
-          pointerEvents: (expanded || errorState?.type === 'APP_ERROR') ? 'auto' : 'none',
+          pointerEvents: expanded || errorState?.type === 'APP_ERROR' ? 'auto' : 'none',
         }}
         onClick={() => setExpanded(false)}
         initial={{ opacity: 0 }}
-        animate={{ opacity: (expanded || errorState?.type === 'APP_ERROR') ? 1 : 0 }}
+        animate={{ opacity: expanded || errorState?.type === 'APP_ERROR' ? 1 : 0 }}
       >
         <div className='fixed inset-0 -z-10 h-screen w-screen bg-linear-to-t from-black via-black/40 to-black/20' />
       </motion.div>
@@ -113,12 +110,13 @@ export default function Nav() {
       </AnimatePresence>
 
       <div
-        className={`fixed bottom-2 left-1/2 mx-auto h-auto w-full max-w-95 -translate-x-1/2 transition-all duration-300 select-none ${isModalOpen
-          ? 'pointer-events-none'
-          : isOpen
-            ? 'pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100'
-            : 'opacity-100'
-          }`}
+        className={`fixed bottom-2 left-1/2 mx-auto h-auto w-[400px] -translate-x-1/2 transition-all duration-300 select-none ${
+          isModalOpen
+            ? 'pointer-events-none'
+            : isOpen
+              ? 'pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100'
+              : 'opacity-100'
+        }`}
         style={{ zIndex: Z_INDEX.NAV }}
         id='nav-card-stack'
         ref={navRef}
@@ -156,24 +154,18 @@ export default function Nav() {
                         pathname !== '/' && setIsHovered(true)
                       }
                     }}
-                    onClick={() => {
-                      if (isCountdownEnabled) {
-                        if (link.onClick) link.onClick()
-                        return
-                      }
+                    onClick={(e) => {
+                      if (link.type === 'COUNTDOWN') return
 
                       expanded
                         ? link.isParent
                           ? toggleParent(link.name)
-                          : link.onClick
-                            ? (link.onClick(), setExpanded(false))
-                            : link.path && navigate(link.path)
+                          : link.path && navigate(link.path)
                         : isTop && setExpanded(true)
                     }}
                     onActionHeightChange={isTop ? setActionHeight : null}
                     totalItems={navigationItems.length}
                     isStackHovered={isStackHovered}
-
                     expanded={expanded}
                     position={position}
                     isTop={isTop}

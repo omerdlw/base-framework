@@ -78,30 +78,33 @@ export function AnalyticsStateProvider({ children }) {
     }
   }, [userState])
 
-  const trackEvent = useCallback((eventName, properties = {}) => {
-    logDebug(`[Analytics State] trackEvent: ${eventName}`)
+  const trackEvent = useCallback(
+    (eventName, properties = {}) => {
+      logDebug(`[Analytics State] trackEvent: ${eventName}`)
 
-    const event = {
-      name: eventName,
-      properties,
-      timestamp: Date.now(),
-      sessionId: userState.sessionId,
-      page: window.location.pathname,
-    }
+      const event = {
+        name: eventName,
+        properties,
+        timestamp: Date.now(),
+        sessionId: userState.sessionId,
+        page: window.location.pathname,
+      }
 
-    logDebug('[Analytics State] Tracking event:', event)
+      logDebug('[Analytics State] Tracking event:', event)
 
-    setSessionState((prev) => ({
-      ...prev,
-      events: [...prev.events, event],
-    }))
+      setSessionState((prev) => ({
+        ...prev,
+        events: [...prev.events, event],
+      }))
 
-    setUserState((prev) => ({
-      ...prev,
-      events: [...prev.events.slice(-100), event],
-      pageViews: eventName === 'page_view' ? prev.pageViews + 1 : prev.pageViews,
-    }))
-  }, [userState.sessionId])
+      setUserState((prev) => ({
+        ...prev,
+        events: [...prev.events.slice(-100), event],
+        pageViews: eventName === 'page_view' ? prev.pageViews + 1 : prev.pageViews,
+      }))
+    },
+    [userState.sessionId]
+  )
 
   const trackScrollDepth = useCallback((percentage) => {
     logDebug(`[Analytics State] trackScrollDepth: ${percentage}%`)
@@ -111,17 +114,23 @@ export function AnalyticsStateProvider({ children }) {
     }))
   }, [])
 
-  const trackConversion = useCallback((conversionType, properties = {}) => {
-    setSessionState((prev) => ({
-      ...prev,
-      conversions: [...prev.conversions, {
-        type: conversionType,
-        properties,
-        timestamp: Date.now(),
-        sessionId: userState.sessionId,
-      }],
-    }))
-  }, [userState.sessionId])
+  const trackConversion = useCallback(
+    (conversionType, properties = {}) => {
+      setSessionState((prev) => ({
+        ...prev,
+        conversions: [
+          ...prev.conversions,
+          {
+            type: conversionType,
+            properties,
+            timestamp: Date.now(),
+            sessionId: userState.sessionId,
+          },
+        ],
+      }))
+    },
+    [userState.sessionId]
+  )
 
   const getSessionMetrics = useCallback(() => {
     const duration = Date.now() - sessionState.startTime
@@ -152,9 +161,7 @@ export function AnalyticsStateProvider({ children }) {
   )
 
   return (
-    <AnalyticsStateContext.Provider value={contextValue}>
-      {children}
-    </AnalyticsStateContext.Provider>
+    <AnalyticsStateContext.Provider value={contextValue}>{children}</AnalyticsStateContext.Provider>
   )
 }
 

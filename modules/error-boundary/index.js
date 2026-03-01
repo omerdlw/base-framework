@@ -12,10 +12,7 @@ export { GlobalErrorListener } from './listener'
 
 export { getErrorReporter } from './reporter'
 
-export {
-  createConsoleHandler,
-  createSentryHandler,
-} from './integrations'
+export { createConsoleHandler, createSentryHandler } from './integrations'
 
 export function GlobalError({ children, onReset }) {
   const pathname = usePathname()

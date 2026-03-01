@@ -15,7 +15,6 @@ export function CountdownProvider({ children }) {
   const [configOverrides, setConfigState] = useState({})
   const config = useMemo(() => ({ ...DEFAULT_COUNTDOWN, ...configOverrides }), [configOverrides])
 
-  const [isPlaying, setIsPlaying] = useState(false)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   const intervalRef = useRef(null)
@@ -52,27 +51,20 @@ export function CountdownProvider({ children }) {
     setConfigState((prev) => ({ ...prev, ...newConfig }))
   }, [])
 
-  const toggleVideo = useCallback(() => {
-    setIsPlaying((prev) => !prev)
-  }, [])
-
   const stateValue = useMemo(
     () => ({
       isEnabled: countdownEnabled,
-      isPlaying,
       timeLeft,
       config,
     }),
-    [countdownEnabled, isPlaying, timeLeft, config]
+    [countdownEnabled, timeLeft, config]
   )
 
   const actionsValue = useMemo(
     () => ({
-      setIsPlaying,
-      toggleVideo,
       setConfig,
     }),
-    [toggleVideo, setConfig]
+    [setConfig]
   )
 
   return (
@@ -93,4 +85,3 @@ export function useCountdownActions() {
   if (!context) throw new Error('useCountdownActions must be within CountdownProvider')
   return context
 }
-

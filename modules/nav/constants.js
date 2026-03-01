@@ -33,8 +33,8 @@ export const getNavCardProps = (expanded, position, showBorder, cardStyle, cardS
 
   return {
     className: CN(
-      'rounded-[30px] border-white/10 absolute left-1/2 h-auto w-full -translate-x-1/2 transform-gpu cursor-pointer overflow-hidden border-2 p-2.5 backdrop-blur-xl bg-black/40',
-      showBorder && 'border-primary/40'
+      'rounded-[30px] border-white/10 absolute left-1/2 h-auto w-full -translate-x-1/2 transform-gpu cursor-pointer border-2 p-2.5 backdrop-blur-xl bg-black/40',
+      showBorder && 'border-white/15'
     ),
     style: {
       ...safeCardStyle,

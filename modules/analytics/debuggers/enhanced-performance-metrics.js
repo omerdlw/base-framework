@@ -24,7 +24,7 @@ export function EnhancedPerformanceMetrics() {
           firstPaint: paint.find((p) => p.name === 'first-paint')?.startTime || 0,
           firstContentfulPaint:
             paint.find((p) => p.name === 'first-contentful-paint')?.startTime || 0,
-          largestContentfulPaint: 0, 
+          largestContentfulPaint: 0,
 
           dnsLookup: Math.round(navigation.domainLookupEnd - navigation.domainLookupStart),
           tcpConnect: Math.round(navigation.connectEnd - navigation.connectStart),

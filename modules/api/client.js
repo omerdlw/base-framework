@@ -239,7 +239,6 @@ export class ApiClient {
         data,
       }
     } catch (error) {
-
       const shouldRetry = retriesLeft > 0 && this._isRetryable(error)
 
       if (shouldRetry) {
@@ -257,7 +256,7 @@ export class ApiClient {
         if (onRetry) {
           try {
             onRetry(retryInfo)
-          } catch (_) { } // eslint-disable-line no-empty
+          } catch (_) {} // eslint-disable-line no-empty
         }
 
         await new Promise((r) => setTimeout(r, backoffDelay))

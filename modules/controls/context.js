@@ -10,9 +10,9 @@ const ControlsStateContext = createContext({
   left: null,
 })
 const ControlsActionsContext = createContext({
-  toggleControls: () => { },
-  closeControls: () => { },
-  setControls: () => { },
+  toggleControls: () => {},
+  closeControls: () => {},
+  setControls: () => {},
 })
 
 export function ControlsProvider({ children }) {
@@ -77,4 +77,3 @@ export function useControlsActions() {
   if (context === undefined) throw new Error('useControlsActions error')
   return context
 }
-

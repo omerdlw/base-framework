@@ -5,6 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { useOS } from '@/lib/hooks'
 
 import { useNavigationContext } from '../context'
+
 export const useNavigationShortcuts = ({ navigate, navigationItems } = {}) => {
   const os = useOS()
   const { setExpanded, toggleParent } = useNavigationContext()

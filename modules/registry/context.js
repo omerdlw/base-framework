@@ -46,7 +46,8 @@ export function RegistryProvider({ children }) {
 
       const existing = keyEntry[source]
       if (existing === item) return prev
-      if (typeof existing === 'object' && typeof item === 'object' && shallowEqual(existing, item)) return prev
+      if (typeof existing === 'object' && typeof item === 'object' && shallowEqual(existing, item))
+        return prev
 
       return {
         ...prev,

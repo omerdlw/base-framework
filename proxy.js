@@ -13,15 +13,13 @@ export function proxy(request) {
   const isDev = process.env.NODE_ENV === 'development'
 
   const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https:;
-    style-src 'self' 'unsafe-inline' https:;
-    img-src 'self' blob: data: https:;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https:;
     font-src 'self' data: https:;
     connect-src 'self' https: wss:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
+    frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;
     frame-ancestors 'none';
     ${!isDev ? 'upgrade-insecure-requests;' : ''}
   `

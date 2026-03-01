@@ -51,9 +51,6 @@ export function ThemeProvider({ children }) {
     Object.entries(THEME_CONFIG.fixed).forEach(([key, value]) => {
       root.style.setProperty(`--color-${key}`, value)
     })
-
-    root.classList.add('dark')
-    root.style.colorScheme = 'dark'
   }, [theme, pageTheme, isInitialized])
 
   const setPageThemeCallback = useCallback((newTheme) => {

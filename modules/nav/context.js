@@ -101,7 +101,16 @@ export function NavigationProvider({ children }) {
       expand,
       toggle,
     }),
-    [expandParentForPath, isParentExpanded, toggleParent, setNavHeight, setSearchQuery, collapse, expand, toggle]
+    [
+      expandParentForPath,
+      isParentExpanded,
+      toggleParent,
+      setNavHeight,
+      setSearchQuery,
+      collapse,
+      expand,
+      toggle,
+    ]
   )
 
   return (

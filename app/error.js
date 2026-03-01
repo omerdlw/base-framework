@@ -19,7 +19,7 @@ export default function Error({ error, reset }) {
   }, [error, reset])
 
   return (
-    <div className='w-screen h-screen center bg-red-500/5 p-4 text-red-500/70 font-semibold'>
+    <div className='center h-screen w-screen bg-red-500/5 p-4 font-semibold text-red-500/70'>
       Bir hata oluştuğu için sayfa yüklenemedi
     </div>
   )

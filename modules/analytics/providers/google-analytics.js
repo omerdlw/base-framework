@@ -100,7 +100,7 @@ class GoogleAnalyticsProvider {
           console.log(`[Analytics] GA4: Event sent - ${eventName}`, parameters)
         }
       }
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 
   identify(userId, traits = {}) {
@@ -120,7 +120,7 @@ class GoogleAnalyticsProvider {
           ...traits,
         })
       }
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 
   page(path, properties = {}) {
@@ -140,7 +140,7 @@ class GoogleAnalyticsProvider {
           ...properties,
         })
       }
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 
   reset() {
@@ -150,7 +150,7 @@ class GoogleAnalyticsProvider {
           user_id: undefined,
         })
       }
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 
   setConsent(consentSettings) {
@@ -158,7 +158,7 @@ class GoogleAnalyticsProvider {
       if (window.gtag) {
         window.gtag('consent', 'update', consentSettings)
       }
-    } catch { } // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 }
 

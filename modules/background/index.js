@@ -16,15 +16,16 @@ export function BackgroundOverlay() {
     overlayOpacity,
     hasBackground,
     videoOptions,
-    position,
     overlay,
     isVideo,
     image,
     video,
-    blur,
+    videoStyle,
+    noiseStyle,
     isPlaying,
+    position,
   } = useBackgroundState()
-  const { setVideoPlaying } = useBackgroundActions()
+  const { setVideoPlaying, setVideoElement } = useBackgroundActions()
 
   const { backgroundAnimation } = useTransitionState()
 
@@ -34,6 +35,7 @@ export function BackgroundOverlay() {
   const shouldAutoPlay = videoOptions?.autoplay ?? true
   const isLoop = videoOptions?.loop ?? true
   const playbackRate = videoOptions?.playbackRate ?? 1
+  const corp = videoOptions?.corp ?? 0
 
   const backgroundKey = isVideo ? video : image
 
@@ -45,30 +47,58 @@ export function BackgroundOverlay() {
   const motionAnimate = backgroundAnimation?.animate ?? { opacity: 1 }
   const motionExit = backgroundAnimation?.exit ?? { opacity: 0 }
 
+  const { leftGradient = 0, rightGradient = 0, ...restVideoStyle } = videoStyle || {}
+
   useEffect(() => {
     if (!isVideo || !videoRef.current) return
 
     const videoEl = videoRef.current
     videoEl.playbackRate = playbackRate
+    videoEl.muted = isMuted
 
-    if (isMuted) {
-      if (shouldAutoPlay) {
-        videoEl.muted = true
-        videoEl.play().catch((e) => console.warn('Autoplay prevented:', e))
-        if (!isPlaying) setVideoPlaying(true)
+    if (isPlaying) {
+      if (videoEl.duration && corp > 0 && videoEl.currentTime >= videoEl.duration - corp) {
+        videoEl.currentTime = 0
+      } else if (videoEl.ended) {
+        videoEl.currentTime = 0
       }
+
+      videoEl.play().catch((e) => {
+        console.warn('Play failed:', e)
+        setVideoPlaying(false)
+      })
     } else {
-      videoEl.muted = false
-      if (isPlaying) {
-        videoEl.play().catch((e) => {
-          console.warn('Play failed:', e)
-          setVideoPlaying(false)
-        })
+      videoEl.pause()
+    }
+
+    setVideoElement(videoEl)
+
+    return () => {
+      setVideoElement(null)
+    }
+  }, [isVideo, video, isMuted, playbackRate, isPlaying, setVideoPlaying, corp, setVideoElement])
+
+  const handleEnded = () => {
+    const videoEl = videoRef.current
+    if (videoEl) {
+      if (isLoop) {
+        videoEl.currentTime = 0
+        videoEl.play().catch((e) => console.warn('Loop play failed:', e))
       } else {
         videoEl.pause()
+        setVideoPlaying(false)
       }
     }
-  }, [isVideo, video, isMuted, shouldAutoPlay, playbackRate, isPlaying, setVideoPlaying])
+  }
+
+  const handleTimeUpdate = () => {
+    const videoEl = videoRef.current
+    if (videoEl && videoEl.duration && corp > 0) {
+      if (videoEl.currentTime >= videoEl.duration - corp) {
+        handleEnded()
+      }
+    }
+  }
 
   return (
     <AnimatePresence mode='wait'>
@@ -93,14 +123,16 @@ export function BackgroundOverlay() {
           {isVideo ? (
             <video
               ref={videoRef}
-              className='absolute inset-0 h-full w-full object-cover'
+              className='absolute inset-0 mx-auto h-full w-full'
               muted={isMuted}
               loop={isLoop}
               style={{
-                filter: blur > 0 ? `blur(${blur}px)` : undefined,
-                transform: blur > 0 ? 'scale(1.1)' : undefined,
+                ...restVideoStyle,
+                filter: restVideoStyle?.filter || undefined,
               }}
               playsInline
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleEnded}
               onLoadedData={() => {
                 const videoEl = videoRef.current
                 if (!videoEl) return
@@ -123,14 +155,31 @@ export function BackgroundOverlay() {
             <div
               className='absolute inset-0 bg-cover bg-no-repeat'
               style={{
-                filter: blur > 0 ? `blur(${blur}px)` : undefined,
-                transform: blur > 0 ? 'scale(1.1)' : undefined,
                 backgroundImage: `url(${image})`,
                 backgroundPosition: position,
+                ...restVideoStyle,
+                filter: restVideoStyle?.filter || undefined,
               }}
             />
           )}
 
+          {Array.from({ length: leftGradient }).map((_, i) => (
+            <div
+              key={`left-grad-${i}`}
+              className='pointer-events-none absolute inset-0 bg-linear-to-r from-black via-transparent to-transparent'
+            />
+          ))}
+
+          {Array.from({ length: rightGradient }).map((_, i) => (
+            <div
+              key={`right-grad-${i}`}
+              className='pointer-events-none absolute inset-0 bg-linear-to-l from-black via-transparent to-transparent'
+            />
+          ))}
+          <div
+            style={{ backgroundImage: `url(./noise.webp)`, ...noiseStyle }}
+            className='fixed inset-0 h-screen w-screen bg-cover bg-center mix-blend-overlay'
+          />
           {overlay && (
             <div style={{ opacity: overlayOpacity }} className='absolute inset-0 bg-black' />
           )}

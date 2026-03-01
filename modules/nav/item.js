@@ -5,10 +5,12 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
+import { DURATION, EASING } from '@/lib/constants/index'
 import { useOS } from '@/lib/hooks'
 import { CN } from '@/lib/utils'
+import { useBackgroundActions, useBackgroundState } from '@/modules/background/context'
 import { useActionComponent, useActionHeight, useNavBadge } from '@/modules/nav/hooks'
-import Icon from '@/ui/icon'
+import Icon, { default as Iconify } from '@/ui/icon'
 import { Item_Nav_Skeleton } from '@/ui/skeletons/nav_item'
 
 import { NavActionsContainer } from './actions'
@@ -40,6 +42,9 @@ export default function Item({
   const actionContainerRef = useRef(null)
   const pathname = usePathname()
   const router = useRouter()
+  const { isVideo, isPlaying } = useBackgroundState()
+  const { toggleVideo } = useBackgroundActions()
+  const showVideoIcon = isActive && isVideo && link.type !== 'COUNTDOWN'
 
   const ActionComponent = useActionComponent(link, pathname)
   useActionHeight(onActionHeightChange, actionContainerRef, ActionComponent, isTop)
@@ -81,11 +86,54 @@ export default function Item({
           <div className='relative flex h-auto w-full items-center space-x-3'>
             <div className='relative flex items-center justify-center'>
               {link?.icon ? (
-                <BadgeIcon
-                  isStackHovered={expanded ? isHovered : isStackHovered}
-                  icon={link.icon}
-                  style={itemStyle.icon}
-                />
+                <div
+                  className={
+                    link.onClick || showVideoIcon
+                      ? 'relative cursor-pointer transition-transform'
+                      : 'relative'
+                  }
+                  onClick={(e) => {
+                    if (showVideoIcon) {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      toggleVideo()
+                      return
+                    }
+                    if (link.onClick) {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      link.onClick(e)
+                    }
+                  }}
+                >
+                  <BadgeIcon
+                    isStackHovered={expanded ? isHovered : isStackHovered}
+                    icon={showVideoIcon ? (isPlaying ? 'mdi:pause' : 'mdi:play') : link.icon}
+                    style={itemStyle.icon}
+                  />
+                  {showVideoIcon && (
+                    <motion.div
+                      className={CN(
+                        'pointer-events-none absolute -top-1 -right-1 z-10 flex size-6 items-center justify-center',
+                        typeof link.icon === 'string' && link.icon.startsWith('http')
+                          ? 'rounded-[10px] bg-cover bg-center bg-no-repeat'
+                          : 'bg-primary/20 rounded-[10px] border border-white/5'
+                      )}
+                      style={
+                        typeof link.icon === 'string' && link.icon.startsWith('http')
+                          ? { backgroundImage: `url(${link.icon})` }
+                          : {}
+                      }
+                      transition={{ duration: DURATION.FAST, ease: EASING.SMOOTH }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      {!(typeof link.icon === 'string' && link.icon.startsWith('http')) && (
+                        <Iconify icon={link.icon} size={14} className='text-white' />
+                      )}
+                    </motion.div>
+                  )}
+                </div>
               ) : (
                 <div className='h-12'></div>
               )}
@@ -108,18 +156,19 @@ export default function Item({
             <div className='relative flex flex-1 flex-col -space-y-0.5 overflow-hidden'>
               {isTop && link.type !== 'COUNTDOWN' && <NavActionsContainer activeItem={link} />}
               <div className='flex items-center gap-2'>
-                {(expanded ? link.shortcut : isTop && link.type !== 'COUNTDOWN' ? 'N' : null) && os === 'MacOS' && (
-                  <span
-                    className='rounded-[8px] border border-white/5 bg-white/5 px-1.5 py-0.5 font-mono text-[10px]'
-                    style={{
-                      opacity: itemStyle.shortcutBadge?.opacity ?? 0.7,
-                      ...itemStyle.shortcutBadge,
-                    }}
-                  >
-                    {shortcutSymbol}
-                    {expanded ? link.shortcut : 'N'}
-                  </span>
-                )}
+                {(expanded ? link.shortcut : isTop && link.type !== 'COUNTDOWN' ? 'N' : null) &&
+                  os === 'MacOS' && (
+                    <span
+                      className='rounded-[8px] border border-white/5 bg-white/5 px-1.5 py-0.5 font-mono text-[10px]'
+                      style={{
+                        opacity: itemStyle.shortcutBadge?.opacity ?? 0.7,
+                        ...itemStyle.shortcutBadge,
+                      }}
+                    >
+                      {shortcutSymbol}
+                      {expanded ? link.shortcut : 'N'}
+                    </span>
+                  )}
                 <Title text={link.title || link.name} style={itemStyle.title} />
               </div>
               <Description

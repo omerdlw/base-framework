@@ -71,43 +71,41 @@ export const AppProviders = ({ children }) => {
   return (
     <MotionConfig reducedMotion={shouldReduceMotion || prefersReducedMotion ? 'always' : 'never'}>
       <AnalyticsInit>
-        <GlobalError>
-          <SettingsProvider>
-            <FeaturesProvider config={PROJECT_CONFIG}>
-              <RegistryProvider>
-                <RegistryInjector type={REGISTRY_TYPES.MODAL} items={registryItems} />
-                <ThemeProvider>
-                  <TransitionProvider>
-                    <BackgroundProvider>
-                      <NavigationProvider config={NAV_CONFIG}>
-                        <ControlsProvider>
-                          <NotificationProvider>
-                            <LoadingProvider>
-                              <CountdownProvider>
-                                <ModalProvider>
-                                  <ContextMenuProvider>
-                                    <NotificationContainer />
-                                    <NotificationListener />
-                                    <GlobalErrorListener />
-                                    <ContextMenuGlobal />
-                                    <BackgroundOverlay />
-                                    <CountdownOverlay />
-                                    <LoadingOverlay />
-                                    {children}
-                                  </ContextMenuProvider>
-                                </ModalProvider>
-                              </CountdownProvider>
-                            </LoadingProvider>
-                          </NotificationProvider>
-                        </ControlsProvider>
-                      </NavigationProvider>
-                    </BackgroundProvider>
-                  </TransitionProvider>
-                </ThemeProvider>
-              </RegistryProvider>
-            </FeaturesProvider>
-          </SettingsProvider>
-        </GlobalError>
+        <SettingsProvider>
+          <FeaturesProvider config={PROJECT_CONFIG}>
+            <RegistryProvider>
+              <RegistryInjector type={REGISTRY_TYPES.MODAL} items={registryItems} />
+              <ThemeProvider>
+                <TransitionProvider>
+                  <BackgroundProvider>
+                    <NavigationProvider config={NAV_CONFIG}>
+                      <ControlsProvider>
+                        <NotificationProvider>
+                          <LoadingProvider>
+                            <CountdownProvider>
+                              <ModalProvider>
+                                <ContextMenuProvider>
+                                  <NotificationContainer />
+                                  <NotificationListener />
+                                  <GlobalErrorListener />
+                                  <ContextMenuGlobal />
+                                  <BackgroundOverlay />
+                                  <CountdownOverlay />
+                                  <LoadingOverlay />
+                                  <GlobalError>{children}</GlobalError>
+                                </ContextMenuProvider>
+                              </ModalProvider>
+                            </CountdownProvider>
+                          </LoadingProvider>
+                        </NotificationProvider>
+                      </ControlsProvider>
+                    </NavigationProvider>
+                  </BackgroundProvider>
+                </TransitionProvider>
+              </ThemeProvider>
+            </RegistryProvider>
+          </FeaturesProvider>
+        </SettingsProvider>
       </AnalyticsInit>
     </MotionConfig>
   )

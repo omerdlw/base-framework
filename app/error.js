@@ -19,8 +19,10 @@ export default function Error({ error, reset }) {
   }, [error, reset])
 
   return (
-    <div className='center h-screen w-screen bg-red-500/5 p-4 font-semibold text-red-500/70'>
-      Bir hata oluştuğu için sayfa yüklenemedi
+    <div className='flex h-full w-full flex-col items-center justify-center p-4'>
+      <div className='rounded-lg bg-red-500/10 px-6 py-4 text-center text-red-500/80 backdrop-blur-sm'>
+        <p className='text-lg font-medium'>Bir hata oluştuğu için sayfa yüklenemedi</p>
+      </div>
     </div>
   )
 }

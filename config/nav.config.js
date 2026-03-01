@@ -9,7 +9,7 @@ export const NAV_CONFIG = {
       icon: 'https://images3.alphacoders.com/118/thumb-1920-1184746.png',
     },
     test: {
-      path: '/test',
+      path: '/test-api',
       name: 'Test',
       description: 'Test Page',
       icon: 'solar:home-2-bold',

@@ -93,8 +93,11 @@ export class ErrorBoundaryCore extends React.Component {
       }
 
       return (
-        <div className='flex min-h-[100px] items-center justify-center rounded-lg border border-red-500/10 bg-red-500/5 p-4 text-sm text-red-500/70'>
-          Bir bileşen yüklenemedi.
+        <div className='flex h-full w-full flex-col items-center justify-center p-4'>
+          <div className='rounded-lg bg-red-500/10 px-6 py-4 text-center text-red-500/80 backdrop-blur-sm'>
+            <p className='text-lg font-medium'>Bir bileşen yüklenemedi</p>
+            {this.props.message && <p className='mt-2 text-sm opacity-80'>{this.props.message}</p>}
+          </div>
         </div>
       )
     }

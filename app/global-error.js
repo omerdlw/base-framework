@@ -21,8 +21,10 @@ export default function GlobalError({ error, reset }) {
   return (
     <html>
       <body>
-        <div className='flex h-screen w-full items-center justify-center bg-zinc-950 text-sm font-medium text-red-500/70'>
-          Kritik bir uygulama hatası oluştu. Lütfen sayfayı yenileyin.
+        <div className='flex h-full w-full flex-col items-center justify-center p-4'>
+          <div className='rounded-lg bg-red-500/10 px-6 py-4 text-center text-red-500/80 backdrop-blur-sm'>
+            <p className='text-lg font-medium'>Kritik bir uygulama hatası oluştu. Lütfen sayfayı yenileyin.</p>
+          </div>
         </div>
       </body>
     </html>

@@ -214,20 +214,26 @@ export class ApiClient {
       const data = await this.parseResponse(response)
 
       if (!response.ok) {
-        if (response.status === HTTP_STATUS.UNAUTHORIZED)
-          globalEvents.emit(EVENT_TYPES.API_UNAUTHORIZED)
-        else if (response.status === HTTP_STATUS.FORBIDDEN)
-          globalEvents.emit(EVENT_TYPES.API_FORBIDDEN)
-        else if (response.status >= 500)
-          globalEvents.emit(EVENT_TYPES.API_ERROR, {
-            message: 'Server error',
-            status: response.status,
-          })
-
         const errorMessage =
           data && typeof data === 'object' && 'message' in data
             ? data.message
             : `HTTP ${response.status}`
+
+        if (!options.silent) {
+          if (response.status === HTTP_STATUS.UNAUTHORIZED)
+            globalEvents.emit(EVENT_TYPES.API_UNAUTHORIZED)
+          else if (response.status === HTTP_STATUS.FORBIDDEN)
+            globalEvents.emit(EVENT_TYPES.API_FORBIDDEN)
+
+          if (options.critical) {
+            globalEvents.emit(EVENT_TYPES.API_ERROR, {
+              status: response.status,
+              message: errorMessage,
+              isCritical: true,
+              retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
+            })
+          }
+        }
 
         throw new ApiError(errorMessage, response.status, data, response)
       }
@@ -256,7 +262,7 @@ export class ApiClient {
         if (onRetry) {
           try {
             onRetry(retryInfo)
-          } catch (_) {} // eslint-disable-line no-empty
+          } catch (_) { } // eslint-disable-line no-empty
         }
 
         await new Promise((r) => setTimeout(r, backoffDelay))
@@ -273,15 +279,29 @@ export class ApiClient {
       if (error.name === 'AbortError') {
         if (options.signal?.aborted) throw error
         const timeoutError = new ApiError('Request timeout', 408)
+
+        if (!options.silent && options.critical) {
+          globalEvents.emit(EVENT_TYPES.API_ERROR, {
+            status: 408,
+            message: 'Request timeout',
+            isCritical: true,
+            retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
+          })
+        }
+
         throw await this.runErrorInterceptors(timeoutError)
       }
       if (error instanceof ApiError) throw await this.runErrorInterceptors(error)
 
       const networkError = new ApiError(error.message || 'Network error', 0)
-      if (!error.status)
+      if (!options.silent && options.critical && !error.status) {
         globalEvents.emit(EVENT_TYPES.API_ERROR, {
+          status: 0,
           message: 'Network error',
+          isCritical: true,
+          retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
         })
+      }
 
       throw await this.runErrorInterceptors(networkError)
     }

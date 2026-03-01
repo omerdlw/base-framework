@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 
@@ -66,11 +66,13 @@ export const useNavigationError = () => {
         const isBatch = errors.length > 1
 
         const title = isBatch ? 'Çoklu API Hatası' : `API Hatası (${errors[0].status || 'Ağ'})`
-        const description = isBatch ? `${errors.length} farklı istek başarısız oldu.` : errors[0].message || 'İstek sırasında bir hata oluştu.'
+        const description = isBatch
+          ? `${errors.length} farklı istek başarısız oldu.`
+          : errors[0].message || 'İstek sırasında bir hata oluştu.'
 
         const handleRetry = () => {
           setErrorState(null)
-          errors.forEach(err => {
+          errors.forEach((err) => {
             if (err.retry) err.retry()
           })
         }

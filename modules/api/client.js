@@ -230,7 +230,10 @@ export class ApiClient {
               status: response.status,
               message: errorMessage,
               isCritical: true,
-              retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
+              retry:
+                options.retryCallback ||
+                (() =>
+                  this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry)),
             })
           }
         }
@@ -262,7 +265,7 @@ export class ApiClient {
         if (onRetry) {
           try {
             onRetry(retryInfo)
-          } catch (_) { } // eslint-disable-line no-empty
+          } catch (_) {} // eslint-disable-line no-empty
         }
 
         await new Promise((r) => setTimeout(r, backoffDelay))
@@ -285,7 +288,10 @@ export class ApiClient {
             status: 408,
             message: 'Request timeout',
             isCritical: true,
-            retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
+            retry:
+              options.retryCallback ||
+              (() =>
+                this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry)),
           })
         }
 
@@ -299,7 +305,9 @@ export class ApiClient {
           status: 0,
           message: 'Network error',
           isCritical: true,
-          retry: options.retryCallback || (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry))
+          retry:
+            options.retryCallback ||
+            (() => this._executeWithRetry(endpoint, options, retriesLeft, delay, attempt, onRetry)),
         })
       }
 

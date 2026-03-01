@@ -150,7 +150,6 @@ export const useNavigationDisplay = () => {
       }
     }
 
-    // Override icon and action for video backgrounds
     if (foundItem && !foundItem.isParent && isVideo) {
       const showMediaAction = foundItem.mediaAction !== false
       let mergedAction = showMediaAction ? <MediaAction /> : null

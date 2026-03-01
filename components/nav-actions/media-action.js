@@ -9,7 +9,6 @@ export default function MediaAction() {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
 
-  // corp is used to pretend the video is shorter than it actually is
   const corp = videoOptions?.corp ?? 0
   const virtualDuration = Math.max(0, duration - corp)
 
@@ -35,7 +34,6 @@ export default function MediaAction() {
       e.stopPropagation()
       const newTime = parseFloat(e.target.value)
       if (videoElement && virtualDuration > 0) {
-        // Prevent seeking past the cropped boundary
         videoElement.currentTime = Math.min(newTime, virtualDuration)
         setCurrentTime(newTime)
       }
@@ -45,7 +43,6 @@ export default function MediaAction() {
 
   if (!isVideo) return null
 
-  // Ensure progress ratio is valid
   const progressRatio = virtualDuration > 0 ? Math.min(currentTime / virtualDuration, 1) : 0
 
   return (

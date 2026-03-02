@@ -110,13 +110,12 @@ export default function Nav() {
       </AnimatePresence>
 
       <div
-        className={`fixed bottom-2 left-1/2 mx-auto h-auto w-[400px] -translate-x-1/2 transition-all duration-300 select-none ${
-          isModalOpen
-            ? 'pointer-events-none'
-            : isOpen
-              ? 'pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100'
-              : 'opacity-100'
-        }`}
+        className={`fixed bottom-2 left-1/2 mx-auto h-auto w-[460px] -translate-x-1/2 transition-all duration-300 select-none ${isModalOpen
+          ? 'pointer-events-none'
+          : isOpen
+            ? 'pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100'
+            : 'opacity-100'
+          }`}
         style={{ zIndex: Z_INDEX.NAV }}
         id='nav-card-stack'
         ref={navRef}

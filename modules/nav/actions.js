@@ -101,7 +101,7 @@ export function NavActionsContainer({ activeItem }) {
   const actions = useNavActions({ activeItem })
 
   return (
-    <div className='absolute top-2/4 right-2 z-10 flex -translate-y-2/4 items-center gap-1'>
+    <div className='flex items-center gap-1 shrink-0 mr-2'>
       {actions.map((action) => (
         <NavAction key={action.key} action={action} />
       ))}

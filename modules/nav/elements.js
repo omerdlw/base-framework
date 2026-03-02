@@ -12,7 +12,7 @@ export const Description = ({ text, style }) => {
     <div className='relative h-auto w-full'>
       <AnimatePresence mode='wait'>
         <motion.p
-          className={CN('line-clamp-1 text-sm lowercase', className)}
+          className={CN('truncate text-sm lowercase', className)}
           transition={{
             ease: EASING.SMOOTH,
             duration: DURATION.FAST,
@@ -68,7 +68,7 @@ export const Icon = ({ icon, isStackHovered, style }) => {
 export const Title = ({ text, style }) => {
   const { className, ...restStyle } = style || {}
   return (
-    <h3 className={CN('pr-4 font-bold uppercase', className)} style={restStyle}>
+    <h3 className={CN('font-bold uppercase truncate', className)} style={restStyle}>
       {text}
     </h3>
   )

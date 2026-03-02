@@ -6,7 +6,6 @@ export const NAV_CONFIG = {
       path: '/',
       name: 'Placeholder',
       description: 'Initial Page',
-      icon: 'https://images3.alphacoders.com/118/thumb-1920-1184746.png',
     },
   },
 

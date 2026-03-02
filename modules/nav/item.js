@@ -153,32 +153,34 @@ export default function Item({
                 )}
               </AnimatePresence>
             </div>
-            <div className='relative flex flex-1 flex-col -space-y-0.5 overflow-hidden'>
-              {isTop && link.type !== 'COUNTDOWN' && <NavActionsContainer activeItem={link} />}
-              <div className='flex items-center gap-2'>
-                {(expanded ? link.shortcut : isTop && link.type !== 'COUNTDOWN' ? 'N' : null) &&
-                  os === 'MacOS' && (
-                    <span
-                      className='rounded-[8px] border border-white/5 bg-white/5 px-1.5 py-0.5 font-mono text-[10px]'
-                      style={{
-                        opacity: itemStyle.shortcutBadge?.opacity ?? 0.7,
-                        ...itemStyle.shortcutBadge,
-                      }}
-                    >
-                      {shortcutSymbol}
-                      {expanded ? link.shortcut : 'N'}
-                    </span>
-                  )}
-                <Title text={link.title || link.name} style={itemStyle.title} />
+            <div className='relative flex flex-1 items-center justify-between gap-2 overflow-hidden w-full'>
+              <div className='flex flex-col -space-y-0.5 min-w-0 flex-1 justify-center h-full'>
+                <div className='flex items-center gap-2'>
+                  {(expanded ? link.shortcut : isTop && link.type !== 'COUNTDOWN' ? 'N' : null) &&
+                    os === 'MacOS' && (
+                      <span
+                        className='rounded-[8px] border border-white/5 bg-white/5 px-1.5 py-0.5 font-mono text-[10px]'
+                        style={{
+                          opacity: itemStyle.shortcutBadge?.opacity ?? 0.7,
+                          ...itemStyle.shortcutBadge,
+                        }}
+                      >
+                        {shortcutSymbol}
+                        {expanded ? link.shortcut : 'N'}
+                      </span>
+                    )}
+                  <Title text={link.title || link.name} style={itemStyle.title} />
+                </div>
+                <Description
+                  text={
+                    isHovered && !expanded && !link.isError && link.type !== 'COUNTDOWN'
+                      ? 'click to see the pages'
+                      : link.description
+                  }
+                  style={itemStyle.description}
+                />
               </div>
-              <Description
-                text={
-                  isHovered && !expanded && !link.isError && link.type !== 'COUNTDOWN'
-                    ? 'click to see the pages'
-                    : link.description
-                }
-                style={itemStyle.description}
-              />
+              {isTop && link.type !== 'COUNTDOWN' && <NavActionsContainer activeItem={link} />}
             </div>
           </div>
         )}

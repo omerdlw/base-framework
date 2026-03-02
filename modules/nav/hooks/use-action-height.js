@@ -19,12 +19,13 @@ export const useActionHeight = (
 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const boxSize = Array.isArray(entry.contentBoxSize)
-          ? entry.contentBoxSize[0]
-          : entry.contentBoxSize
-        if (boxSize) {
-          onActionHeightChange(boxSize.blockSize)
-        }
+        // Fallback to offsetHeight if borderBoxSize is undefined or missing
+        const boxSize = Array.isArray(entry.borderBoxSize)
+          ? entry.borderBoxSize[0]?.blockSize
+          : entry.borderBoxSize?.blockSize
+
+        // Always fallback to the element's actual layout height for the fastest response
+        onActionHeightChange(boxSize || element.offsetHeight)
       }
     })
 
